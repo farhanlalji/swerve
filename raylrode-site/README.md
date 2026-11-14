@@ -16,4 +16,3 @@ enquiries through Resend (resend.com). Nothing is stored.
     which only delivers to the email address the Resend account was created with.
 - Domains: `raylrode.com`, `www.raylrode.com`
 
-Portrait: add `img/farhan.jpg` and replace the "FL" initials in the About section with an <img>.
