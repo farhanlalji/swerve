@@ -116,7 +116,23 @@ section { padding: 64px 0; border-top: 1px solid var(--line); display: grid; gap
 /* Contact */
 .contact { background: var(--ink); color: var(--bg); border-radius: 18px; padding: clamp(24px, 5vw, 48px); display: grid; gap: 18px; border-top: 0; margin: 64px 0; }
 .contact .eyebrow { color: inherit; opacity: .7; }
-.contact .btn { border-color: var(--bg); background: var(--bg); color: var(--ink); width: fit-content; }
+.contact .btn { border-color: var(--bg); background: var(--bg); color: var(--ink); width: fit-content; font: inherit; font-weight: 600; cursor: pointer; }
+.contact .btn:disabled { opacity: .5; cursor: wait; transform: none; }
+.form { display: grid; gap: 16px; margin-top: 8px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+.form label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
+.form .opt { font-weight: 400; opacity: .7; }
+.form input, .form select, .form textarea { font: 400 16px/1.4 var(--f-body); color: var(--ink); background: var(--bg); border: 2px solid transparent; border-radius: 10px; padding: 11px 12px; width: 100%; }
+.form textarea { resize: vertical; min-height: 120px; }
+.form input:focus-visible, .form select:focus-visible, .form textarea:focus-visible, .contact .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.form [aria-invalid="true"] { border-color: #E2735F; }
+.form .check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; }
+.form .check input { width: 20px; height: 20px; margin: 2px 0 0; flex: none; accent-color: var(--accent); padding: 0; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.send { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.status-msg { font-size: 15px; }
+.status-msg.ok { font-weight: 600; }
 footer { padding: 28px 0 40px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn:hover { transform: none; } }
@@ -250,16 +266,80 @@ footer { padding: 28px 0 40px; border-top: 1px solid var(--line); display: flex;
 <section id="contact" class="contact" aria-labelledby="contact-h">
   <p class="eyebrow">Work with us</p>
   <h2 id="contact-h">Have a dilemma worth measuring?</h2>
-  <p>We're looking for partners in community work, education and AI research to shape the next apps on the line. Tell us what you want to find out.</p>
-  <a class="btn" href="mailto:hello@raylrode.com">hello@raylrode.com</a>
+  <p>We're looking for partners in community work, education and AI research to shape the next apps on the line. Tell us what you want to find out and we'll get back to you.</p>
+  <form id="enquiry" class="form" method="post" action="/api/contact" novalidate>
+    <div class="grid2">
+      <label>Name<input name="name" autocomplete="name" required maxlength="100"></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+    </div>
+    <div class="grid2">
+      <label><span>Organisation <span class="opt">(optional)</span></span><input name="org" autocomplete="organization" maxlength="150"></label>
+      <label>I'm interested in
+        <select name="interest" required>
+          <option value="">Choose one</option>
+          <option>Social project</option>
+          <option>Education</option>
+          <option>Intelligence systems / AI</option>
+          <option>Data or research licensing</option>
+          <option>Partnership or investment</option>
+          <option>Something else</option>
+        </select>
+      </label>
+    </div>
+    <label>Message<textarea name="message" rows="5" required minlength="10" maxlength="5000" placeholder="What would you like to find out, and who would take part?"></textarea></label>
+    <label class="hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
+    <input type="hidden" name="t" value="">
+    <label class="check"><input type="checkbox" name="consent" value="yes" required><span>Raylrode can use these details to reply to me. They're sent to us by email and not stored on this site.</span></label>
+    <div class="send">
+      <button class="btn" type="submit">Send enquiry</button>
+      <p class="status-msg" role="status" aria-live="polite"></p>
+    </div>
+  </form>
 </section>
 </main>
 
 <footer>
   <span>&copy; 2026 Raylrode</span>
-  <span>This site uses no cookies and collects no data.</span>
+  <span>No cookies or tracking. The contact form only sends your message to us.</span>
 </footer>
 
 </div>
+<script>
+(() => {
+  const form = document.getElementById("enquiry");
+  const msg = form.querySelector(".status-msg");
+  const btn = form.querySelector("button[type=submit]");
+  form.elements.t.value = String(Date.now());
+  // Without JavaScript the form still posts normally and the server redirects back here.
+  if (location.search.includes("sent=1")) { msg.textContent = "Thanks, your enquiry has been sent."; msg.className = "status-msg ok"; }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    let bad = null;
+    for (const el of form.querySelectorAll("[required]")) {
+      const ok = el.checkValidity();
+      el.setAttribute("aria-invalid", ok ? "false" : "true");
+      if (!ok && !bad) bad = el;
+    }
+    if (bad) { msg.textContent = "Please fill in the highlighted fields."; msg.className = "status-msg"; bad.focus(); return; }
+
+    btn.disabled = true; msg.textContent = "Sending…"; msg.className = "status-msg";
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(form)))
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status >= 400 && res.status < 500) { msg.textContent = data.error || "Please check the form."; return; }
+      if (!res.ok) throw new Error(data.error || "Something went wrong.");
+      form.reset(); form.elements.t.value = String(Date.now());
+      msg.textContent = "Thanks, your enquiry has been sent. We'll be in touch."; msg.className = "status-msg ok";
+    } catch (err) {
+      const why = err instanceof TypeError ? "We couldn't reach the server." : err.message;
+      msg.textContent = why + " Please try again in a moment."; msg.className = "status-msg";
+    } finally { btn.disabled = false; }
+  });
+})();
+</script>
 </body>
 </html>
