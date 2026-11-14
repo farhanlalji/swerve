@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Raylrode</title>
+<meta name="description" content="Raylrode builds apps that put people in moral and strategic dilemmas, and records what they choose. For social projects, education and intelligence systems.">
+<meta property="og:title" content="Raylrode">
+<meta property="og:description" content="Apps that put people in moral and strategic dilemmas, and record what they choose.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://raylrode.com">
+<meta name="theme-color" content="#EEEDE8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131513" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* Fonts are self-hosted: no requests to third parties from visitors' browsers. */
+@font-face { font-family: "Barlow Condensed"; font-weight: 700; font-display: swap; src: url(fonts/barlow-condensed-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-display: swap; src: url(fonts/ibm-plex-sans-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-display: swap; src: url(fonts/ibm-plex-sans-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-display: swap; src: url(fonts/ibm-plex-mono-latin-400-normal.woff2) format("woff2"); }
+
+/* Raylrode: one long editorial column. The apps are shown as stations on a single rail line, Swerve first. */
+:root {
+  --bg: #EEEDE8; --surface: #F8F7F3; --ink: #1A1C1A; --muted: #5B605B; --line: #CBCAC2;
+  --accent: #C98A06; --accent-soft: #F3E4BF; --rail: #7B7368;
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #131513; --surface: #1B1E1B; --ink: #E8E9E4; --muted: #9DA29C; --line: #353935;
+  --accent: #F0B435; --accent-soft: #3A2F18; --rail: #8F8778; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #131513; --surface: #1B1E1B; --ink: #E8E9E4; --muted: #9DA29C; --line: #353935;
+  --accent: #F0B435; --accent-soft: #3A2F18; --rail: #8F8778; color-scheme: dark }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.6 var(--f-body);
+  padding: 0 max(16px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(16px, env(safe-area-inset-left)); }
+.wrap { max-width: 920px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: .01em; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(44px, 9vw, 92px); }
+h2 { font-size: clamp(32px, 5vw, 48px); }
+h3 { font-size: 26px; }
+p { margin: 0; max-width: 62ch; }
+a { color: inherit; text-underline-offset: 3px; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.eyebrow { font: 400 12px/1.4 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+
+/* Header */
+header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.brand { font: 700 24px/1 var(--f-display); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+nav { display: flex; gap: 20px; font-size: 15px; }
+nav a { text-decoration: none; color: var(--muted); }
+nav a:hover { color: var(--ink); }
+@media (max-width: 560px) { nav { display: none; } }
+
+/* Hero */
+.hero { padding: 72px 0 56px; display: grid; gap: 24px; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lede { font-size: 20px; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+.btn { display: inline-block; padding: 13px 20px; border-radius: 10px; font-weight: 600; text-decoration: none; border: 1px solid var(--ink); }
+.btn.primary { background: var(--ink); color: var(--bg); }
+.btn:hover { transform: translateY(-1px); }
+
+section { padding: 64px 0; border-top: 1px solid var(--line); display: grid; gap: 28px; }
+.head { display: grid; gap: 12px; }
+
+/* Three uses */
+.uses { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.use { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: grid; gap: 10px; align-content: start; }
+.use .n { font: 400 12px var(--f-mono); color: var(--accent); letter-spacing: .1em; }
+.use p { font-size: 15px; color: var(--muted); }
+
+/* Swerve feature */
+.feature { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: clamp(22px, 4vw, 40px); display: grid; gap: 24px; grid-template-columns: 1.2fr 1fr; align-items: center; }
+@media (max-width: 760px) { .feature { grid-template-columns: 1fr; } }
+.feature .copy { display: grid; gap: 16px; }
+.status { display: inline-flex; align-items: center; gap: 8px; font: 400 12px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; background: var(--accent-soft); color: var(--ink); padding: 6px 10px; border-radius: 999px; width: fit-content; }
+.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 15px; }
+.facts li { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding-bottom: 10px; border-bottom: 1px dashed var(--line); }
+.facts li:last-child { border-bottom: 0; padding-bottom: 0; }
+.facts b { font: 400 13px var(--f-mono); color: var(--muted); font-weight: 400; padding-top: 2px; }
+.card { aspect-ratio: 4 / 5; max-width: 300px; justify-self: center; width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: grid; grid-template-rows: auto 1fr auto; gap: 12px; transform: rotate(-3deg); box-shadow: 0 18px 40px -24px rgb(0 0 0 / .45); }
+.card .q { font: 700 28px/1.05 var(--f-display); text-transform: uppercase; align-self: center; }
+.card .choices { display: flex; justify-content: space-between; font: 400 12px var(--f-mono); text-transform: uppercase; letter-spacing: .08em; }
+.card .choices span:last-child { color: var(--accent); }
+
+/* The line: apps as stations */
+.line { list-style: none; margin: 0; padding: 0; position: relative; }
+.line::before { content: ""; position: absolute; left: 11px; top: 14px; bottom: 14px; width: 4px; border-radius: 2px;
+  background: repeating-linear-gradient(to bottom, var(--rail) 0 10px, transparent 10px 16px); opacity: .55; }
+.stop { position: relative; padding: 0 0 36px 52px; display: grid; gap: 8px; }
+.stop:last-child { padding-bottom: 0; }
+.stop::before { content: ""; position: absolute; left: 3px; top: 6px; width: 20px; height: 20px; border-radius: 50%; background: var(--bg); border: 4px solid var(--rail); }
+.stop.live::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 6px var(--accent-soft); }
+.stop .meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
+.tag { font: 400 11px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; }
+.stop.live .tag.state { border-color: var(--accent); color: var(--ink); background: var(--accent-soft); }
+.stop p { color: var(--muted); font-size: 16px; }
+.stop .for { font-size: 14px; }
+.stop .for b { color: var(--ink); font-weight: 600; }
+
+/* About */
+.about { display: grid; grid-template-columns: 160px 1fr; gap: 32px; align-items: start; }
+@media (max-width: 640px) { .about { grid-template-columns: 1fr; } }
+.portrait { width: 160px; aspect-ratio: 1; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; font: 700 52px var(--f-display); color: var(--muted); }
+.about .copy { display: grid; gap: 16px; }
+.todo { background: var(--accent-soft); border-radius: 4px; padding: 0 4px; }
+
+/* Contact */
+.contact { background: var(--ink); color: var(--bg); border-radius: 18px; padding: clamp(24px, 5vw, 48px); display: grid; gap: 18px; border-top: 0; margin: 64px 0; }
+.contact .eyebrow { color: inherit; opacity: .7; }
+.contact .btn { border-color: var(--bg); background: var(--bg); color: var(--ink); width: fit-content; }
+footer { padding: 28px 0 40px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn:hover { transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a class="brand" href="/" aria-label="Raylrode home">
+    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 2v18M17 2v18M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+    Raylrode
+  </a>
+  <nav aria-label="Sections">
+    <a href="#uses">What it's for</a>
+    <a href="#line">Apps</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+<div class="hero">
+  <p class="eyebrow">Moral and strategic dilemmas, measured</p>
+  <h1>See how people <em>really</em> decide</h1>
+  <p class="lede">Raylrode builds short, playable apps that put people in moral and strategic dilemmas. Each one records what people choose and how long they take to decide. The results feed social projects, classrooms and intelligence systems.</p>
+  <div class="actions">
+    <a class="btn primary" href="https://swerve.raylrode.com">Play Swerve</a>
+    <a class="btn" href="#contact">Build one with us</a>
+  </div>
+</div>
+
+<section id="uses" aria-labelledby="uses-h">
+  <div class="head">
+    <p class="eyebrow">What it's for</p>
+    <h2 id="uses-h">Three kinds of work</h2>
+  </div>
+  <div class="uses">
+    <div class="use">
+      <span class="n">01</span>
+      <h3>Social projects</h3>
+      <p>Find out how a community weighs fairness, risk and loyalty before a decision is made for them, not after.</p>
+    </div>
+    <div class="use">
+      <span class="n">02</span>
+      <h3>Education</h3>
+      <p>Turn ethics and game theory into something students play, then show the class how their choices compare.</p>
+    </div>
+    <div class="use">
+      <span class="n">03</span>
+      <h3>Intelligence systems</h3>
+      <p>Give AI and decision-support systems a real human baseline: what people choose under pressure, and where they disagree.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="swerve-h">
+  <div class="head">
+    <p class="eyebrow">Our first app</p>
+    <h2 id="swerve-h">Swerve</h2>
+  </div>
+  <div class="feature">
+    <div class="copy">
+      <span class="status">Live</span>
+      <p>The trolley problem, one swipe at a time. Players face 20 dilemmas, swipe to act or to leave things as they are, and get a moral archetype at the end. They can then challenge friends to see where they agree.</p>
+      <ul class="facts">
+        <li><b>Design</b><span>18 balanced scenarios: lever or push, 1 to 5 lives at stake, and a stranger, child or family member on the other track</span></li>
+        <li><b>Measured</b><span>Every choice, with its decision time to the millisecond</span></li>
+        <li><b>Quality</b><span>Attention checks, and a randomised swipe direction so habit can be told apart from intent</span></li>
+        <li><b>Privacy</b><span>Profile questions are optional, nicknames never leave the device, and IP addresses are never stored</span></li>
+      </ul>
+      <a class="btn primary" href="https://swerve.raylrode.com" style="width:fit-content">Play Swerve</a>
+    </div>
+    <div class="card" aria-hidden="true">
+      <span class="eyebrow">Dilemma 7 of 20</span>
+      <span class="q">Pull the lever: save five, lose one?</span>
+      <span class="choices"><span>&larr; Leave</span><span>Act &rarr;</span></span>
+    </div>
+  </div>
+</section>
+
+<section id="line" aria-labelledby="line-h">
+  <div class="head">
+    <p class="eyebrow">The line</p>
+    <h2 id="line-h">What we'll build next</h2>
+    <p class="muted">Swerve is the first stop. These are the next ones: working titles, open to partners who want to shape them.</p>
+  </div>
+  <ol class="line">
+    <li class="stop live">
+      <div class="meta"><h3>Swerve</h3><span class="tag state">Live</span><span class="tag">Moral</span></div>
+      <p>Who would you save? Harm trade-offs in the trolley tradition.</p>
+    </li>
+    <li class="stop">
+      <div class="meta"><h3>Commons</h3><span class="tag state">Planned</span><span class="tag">Strategic</span></div>
+      <p>A shared resource, a group of players, and a choice each round: contribute or take. Shows when groups cooperate, and what makes them stop.</p>
+      <p class="for"><b>For</b> community and climate projects, civic planning</p>
+    </li>
+    <li class="stop">
+      <div class="meta"><h3>Triage</h3><span class="tag state">Planned</span><span class="tag">Moral</span></div>
+      <p>Not enough beds, budget or aid for everyone. Players decide who gets what, and why.</p>
+      <p class="for"><b>For</b> public health teaching, policy consultation</p>
+    </li>
+    <li class="stop">
+      <div class="meta"><h3>Standoff</h3><span class="tag state">Planned</span><span class="tag">Strategic</span></div>
+      <p>Two players, one deal. Trust, bargain or betray, and see how it plays out across cultures and age groups.</p>
+      <p class="for"><b>For</b> economics and game theory classes, negotiation training</p>
+    </li>
+    <li class="stop">
+      <div class="meta"><h3>Fog</h3><span class="tag state">Planned</span><span class="tag">Strategic</span></div>
+      <p>Decisions with missing or misleading information. People and AI systems face the same dilemmas, so their choices can be compared directly.</p>
+      <p class="for"><b>For</b> AI evaluation, decision-support research</p>
+    </li>
+  </ol>
+</section>
+
+<section id="about" aria-labelledby="about-h">
+  <div class="head">
+    <p class="eyebrow">About</p>
+    <h2 id="about-h">Who's behind Raylrode</h2>
+  </div>
+  <div class="about">
+    <div class="portrait" aria-hidden="true">R</div>
+    <div class="copy">
+      <p><span class="todo">[Your name]</span> founded Raylrode to <span class="todo">[one sentence on why: what made you want to measure how people decide]</span>.</p>
+      <p><span class="todo">[Your background: work, study or projects that led here, in two or three sentences.]</span></p>
+      <p><span class="todo">[What you're looking for now: partners, schools, researchers, funding.]</span></p>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact" aria-labelledby="contact-h">
+  <p class="eyebrow">Work with us</p>
+  <h2 id="contact-h">Have a dilemma worth measuring?</h2>
+  <p>We're looking for partners in community work, education and AI research to shape the next apps on the line. Tell us what you want to find out.</p>
+  <a class="btn" href="mailto:hello@raylrode.com">hello@raylrode.com</a>
+</section>
+</main>
+
+<footer>
+  <span>&copy; 2026 Raylrode</span>
+  <span>This site uses no cookies and collects no data.</span>
+</footer>
+
+</div>
+</body>
+</html>
