@@ -214,7 +214,7 @@ function Onboard(p: {
         <p className="note">Swipe directions are randomised per player, so check the arrows.</p>
         <label className="consent" htmlFor="consent">
           <input type="checkbox" id="consent" checked={p.consent} onChange={e => p.setConsent(e.target.checked)} />
-          <span>I&apos;m 18 or over and agree that my anonymous answers, response times, approximate location, device time zone and language, and any profile questions I choose to answer can be used for research, as described in the <Link href="/privacy">privacy notice</Link>. I can stop at any time.</span>
+          <span>I&apos;m 18 or over. I explicitly agree that my answers, which may reveal my moral views, plus response times, approximate location, device time zone and language, and any profile questions I answer, can be used for research and shared with partners in anonymised form, as set out in the <Link href="/privacy">privacy notice</Link>. I can stop or delete my data at any time.</span>
         </label>
         <button className="primary" disabled={!p.consent} onClick={() => next()}>Get started</button>
       </>}
