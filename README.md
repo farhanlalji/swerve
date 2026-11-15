@@ -11,7 +11,7 @@ A swipe-based trolley-problem study. Players swipe through 20 balanced dilemmas,
 | `/` | Onboarding → core 20 → profile → deeper dilemmas |
 | `/c/<code>` | Challenge link. Shows "<nick> challenged you" with a share preview image, then compares answers |
 | `/research` | Researcher view (password: `RESEARCH_KEY`): cell-by-cell results and CSV export |
-| `/privacy` | Privacy notice (draft: review before launch) |
+| `/privacy` | Privacy notice, with a button that deletes this device's data |
 | `/api/participants` | Registers a participant and returns a signed token. Country and region come from Vercel's edge headers. The IP is never stored |
 | `/api/responses` | Saves swipes in batches. Retries are idempotent |
 | `/api/export` | JSON or CSV export for researchers |
@@ -54,8 +54,16 @@ npm run typecheck && npm run build
 
 ## Before public launch
 
-- [ ] Review `/privacy` with your data protection contact and fill in the contact email
-- [ ] Check whether you need to pay the ICO data protection fee
+- [x] Privacy notice: controller, processors, 5-year retention, ICO complaints, licensing of anonymised data (consent version `2026-11-v2`)
+- [x] "Delete my data" button on `/privacy`, using the participant id and token stored on the device
+- [ ] Set `NEXT_PUBLIC_PRIVACY_CONTACT` in Vercel and redeploy (it is fixed at build time)
+- [ ] Pay the ICO data protection fee if it applies
 - [ ] Get ethics approval if results will be published (data collected before approval may not be usable)
-- [ ] Soft launch with one class: check completion, attention-check pass rate and share rate
-- [ ] Add a "delete my data" request route that uses the participant id stored on the device
+- [ ] Soft launch with one group: check completion, attention-check pass rate and share rate
+- [ ] On launch day, delete test rows created before the launch date
+
+## Data commitments to keep
+
+- **Partner datasets:** only participants with `consent_version` `2026-11-v2` or later. Drop `id`/`participant`, `client_id`, `session_id`, `run_id`, `ip_region` and `timezone`, keeping location to country level. Partners must agree not to re-identify anyone.
+- **Retention:** delete answers more than 5 years old, e.g. once a year:
+  `delete from participants where created_at < now() - interval '5 years';` (their responses go with them)

@@ -2,7 +2,7 @@
 import { AGES, GENDERS, ISO_SET, PREFER_NOT } from "./countries";
 import { TYPE_KEYS, type TypeKey } from "./scenarios";
 
-export const CONSENT_VERSION = "2026-11-v1";
+export const CONSENT_VERSION = "2026-11-v2";
 
 const str = (v: unknown, max = 64) => typeof v === "string" && v.length <= max ? v : null;
 const oneOf = <T extends string>(v: unknown, opts: readonly T[]) => (typeof v === "string" && (opts as readonly string[]).includes(v) ? v as T : null);
