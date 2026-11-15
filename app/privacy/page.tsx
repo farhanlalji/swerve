@@ -56,9 +56,6 @@ export default function Privacy() {
       <h2>Delete my data</h2>
       <DeleteMyData />
 
-      <h2>Earlier participants</h2>
-      <p>If you took part under an earlier version of this notice (consent version 2026-11-v1), your answers are used for research only and are not included in datasets shared with partners.</p>
-
       <p><Link href="/">Back to Swerve</Link></p>
     </main>
   );
